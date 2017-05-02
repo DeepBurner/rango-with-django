@@ -14,7 +14,7 @@
         {% if categories %}
             <ul>
                 {% for category in categories %}
-                <li>{{ category.name }}</li>
+                <li><a href="/rango/category/{{ category.slug }}">{{ category.name }}</a></li>
                 {% endfor %}
             </ul>
         {% else %}
@@ -22,6 +22,17 @@
         {% endif %}
 
         <a href="/rango/about/">About</a><br/>
+
+        <h1>Top 5 most viewed pages</h1>
+        {% if top %}
+            <ul>
+                {% for category in categories %}
+                <li><a href="/rango/category/{{ category.slug }}">{{ category.name }}</a></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <strong>No categories to see here.</strong>
+        {% endif %}
     </body>
 
 </html>
