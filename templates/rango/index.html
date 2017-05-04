@@ -1,15 +1,12 @@
-<!DOCTYPE html>
+{% extends 'base.html' %}
 
 {% load staticfiles %}
 
-<html>
+{% block title %}Rango{% endblock %}
 
-    <head>
-        <title>Rango</title>
-    </head>
-
-    <body>
-        {% if user.is_authenticated %}
+{% block body_block %}
+    <h1>{{ category_name }}</h1>
+    {% if user.is_authenticated %}
         <h1>Rango says... hello {{ user.username }}!</h1>
         {% else %}
         <h1>Rango says... hello world!</h1>
@@ -18,29 +15,24 @@
         {% if categories %}
             <ul>
                 {% for category in categories %}
-                <li><a href="/rango/category/{{ category.slug }}">{{ category.name }}</a></li>
+                <li><a href="{% url 'category' category_name_slug=category.slug %}">{{ category.name }}</a></li>
                 {% endfor %}
             </ul>
         {% else %}
             <strong>No categories to see here.</strong>
         {% endif %}
 
-        <a href="/rango/about/">About</a><br/>
+        <a href="{% url 'about' %}">About</a><br/>
 
         <h1>Top 5 most viewed pages</h1>
         {% if top %}
             <ul>
                 {% for category in categories %}
-                <li><a href="/rango/category/{{ category.slug }}">{{ category.name }}</a></li>
+                <li><a href="{% url 'category' category_name_slug=category.slug %}">{{ category.name }}</a></li>
                 {% endfor %}
             </ul>
         {% else %}
             <strong>No categories to see here.</strong>
         {% endif %}
 
-        <a href="/rango/add_category/">Add a New Category</a><br />
-        <a href="/rango/register/">Register Here</a>
-        <a href="/rango/login/">Login</a>
-    </body>
-
-</html>
+{% endblock %}

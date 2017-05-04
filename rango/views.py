@@ -6,8 +6,10 @@ from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect, HttpResponse
+from django.contrib.auth.decorators import login_required
 
 def index(request):
+    request.session.set_test_cookie()
     category_list = Category.objects.order_by('-likes')[:5]
     top_list = Category.objects.order_by('-views')[:5]
     context_dict = {'categories': category_list, 'top': top_list}
@@ -38,7 +40,7 @@ def category(request, category_name_slug):
     return render(request, 'rango/category.html', context_dict)
 
 #---------------------------------------------
-
+@login_required
 def add_category(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST)
@@ -56,6 +58,7 @@ def add_category(request):
 
 #------------------------------------------
 
+@login_required
 def add_page(request, category_name_slug):
     try:
         cat = Category.objects.get(slug=category_name_slug)
@@ -87,6 +90,9 @@ def add_page(request, category_name_slug):
 #---------------------------------------------------
 
 def register(request):
+    if request.session.test_cookie_worked():
+        print(">>>> TEST COOKIE WORKED!")
+        request.session.delete_test_cookie()
     register_complete = False
 
     if request.method == 'POST':
@@ -139,4 +145,24 @@ def user_login(request):
 
     else:
         return(render(request, 'rango/login.html', {}))
+
+
+#------------------------------------------------
+
+@login_required
+def restricted(request):
+    return HttpResponse("Since you're logged in, you can see this text!")
+
+#---------------------------------------------------
+
+from django.contrib.auth import logout
+
+# Use the login_required() decorator to ensure only those logged in can access the view.
+@login_required
+def user_logout(request):
+    # Since we know the user is logged in, we can now just log them out.
+    logout(request)
+
+    # Take the user back to the homepage.
+    return HttpResponseRedirect('/rango/')
 
